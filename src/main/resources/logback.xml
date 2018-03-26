@@ -83,8 +83,10 @@
         </encoder>
     </appender>
 
+    <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE"/>
+
     <!-- 很多人使用Mybatis的时候，控制台不能输出SQL语句，造成调试困难。只需要让DAO层的日志级别调整为DEBUG就可以了 -->
-    <logger name="com.chejie" level="DEBUG">
+    <logger name="com.aibton.server.monitor.dao" level="DEBUG">
         <appender-ref ref="file-sql"/>
     </logger>
     <!-- 指定项目可输出的最低级别日志 -->
