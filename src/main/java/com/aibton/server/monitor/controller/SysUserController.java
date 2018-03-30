@@ -5,6 +5,8 @@
 package com.aibton.server.monitor.controller;
 
 import com.aibton.framework.data.ResponseNormal;
+import com.aibton.framework.util.ResponseUtils;
+import com.aibton.server.monitor.core.utils.SessionUtils;
 import com.aibton.server.monitor.data.request.LoginReq;
 import com.aibton.server.monitor.entity.SysUser;
 import com.aibton.server.monitor.service.inter.SysUserService;
@@ -12,10 +14,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author huzhihui
@@ -37,5 +36,10 @@ public class SysUserController {
         return sysUserService.login(sysUser);
     }
 
+    @ApiOperation(value = "获取登录用户信息")
+    @GetMapping(value = "loginUserInfo")
+    public ResponseNormal<SysUser> loginUserInfo() {
+        return ResponseUtils.getData(true, SessionUtils.getLoginUserInfo());
+    }
 
 }

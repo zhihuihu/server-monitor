@@ -9,6 +9,7 @@ import com.aibton.framework.util.AssertUtils;
 import com.aibton.framework.util.ResponseUtils;
 import com.aibton.server.monitor.core.enums.ResponseCommonEnum;
 import com.aibton.server.monitor.core.utils.IdWorkerUtils;
+import com.aibton.server.monitor.core.utils.SessionUtils;
 import com.aibton.server.monitor.dao.SysUserRepository;
 import com.aibton.server.monitor.entity.SysUser;
 import com.aibton.server.monitor.service.inter.SysUserService;
@@ -49,6 +50,7 @@ public class SysUserServiceImpl implements SysUserService {
             sysUserLogin.setLoginTime(new Date());
             sysUserRepository.save(sysUserLogin);
         }
+        SessionUtils.setLoginUserInfo(sysUser);
         return ResponseUtils.getData(true, "操作成功，用户登录成功");
     }
 }
