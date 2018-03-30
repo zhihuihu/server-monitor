@@ -17,6 +17,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -31,8 +33,16 @@ public class BasicController {
 
     @ApiOperation(value = "系统基本情况")
     @GetMapping(value = "system/info")
-    public ResponseNormal<SysInfoResp> sysInfo() {
+    public ResponseNormal<SysInfoResp> sysInfo() throws Exception {
         SysInfoResp sysInfoResp = new SysInfoResp();
+        Process process = Runtime.getRuntime().exec("free -m");
+        BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        String line = "";
+        List<String> processList = new ArrayList<String>();
+        while ((line = input.readLine()) != null) {
+            processList.add(line);
+            System.out.println(line);
+        }
         UsageResp mem = new UsageResp();
         mem.setName("内存");
         mem.setPercent("78");
