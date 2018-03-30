@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -43,6 +44,16 @@ public class SysProjectController {
     public ResponseNormal<List<SysProject>> getAll() {
         List<SysProject> sysProjects = sysProjectRepository.findAll();
         return ResponseUtils.getData(true, sysProjects);
+    }
+
+    @ApiOperation(value = "查询所有分支")
+    @GetMapping(value = "getAllBranch")
+    public ResponseNormal<List<String>> getAllBranch() {
+        List<String> branchs = new ArrayList<>();
+        branchs.add("master");
+        branchs.add("feature/WECHAT-20180321");
+        branchs.add("feature/FAST-RUN-BOOT");
+        return ResponseUtils.getData(true, branchs);
     }
 
     @ApiOperation(value = "新增一个项目")

@@ -37,8 +37,10 @@ public class GlobalException extends AbstractExceptionHandler {
             HttpServletResponseJsonUtils.sendJsonObject(response, this.errorHandlerProcess(request, ex));
             return null;
         } else {
-            ModelAndView modelAndView = new ModelAndView("redirect:/basical/page/error");
-            return modelAndView;
+            /*ModelAndView modelAndView = new ModelAndView("redirect:/basical/page/error");
+            return modelAndView;*/
+            HttpServletResponseJsonUtils.sendJsonObject(response, this.errorHandlerProcess(request, ex));
+            return null;
         }
     }
 
