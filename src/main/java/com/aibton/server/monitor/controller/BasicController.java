@@ -52,11 +52,22 @@ public class BasicController {
         }
         UsageResp mem = new UsageResp();
         mem.setName("内存");
-        mem.setPercent((Integer.parseInt(useMem) / Integer.parseInt(totalMem)) + "");
+        mem.setPercent((Double.parseDouble(useMem) / Double.parseDouble(totalMem)) + "");
         mem.setTotal(totalMem + "M");
+
+        process = Runtime.getRuntime().exec("top \\n exit");
+        String cpuUse = "";
+        while ((line = input.readLine()) != null) {
+            List<String> splits = Arrays.asList(line.split("\\s+"));
+            if (!CollectionUtils.isEmpty(splits) && splits.get(0).equals("%Cpu(s):")) {
+                cpuUse = splits.get(1);
+                break;
+            }
+        }
+
         UsageResp cpu = new UsageResp();
         cpu.setName("CPU");
-        cpu.setPercent("43");
+        cpu.setPercent(cpuUse);
         cpu.setTotal("3.5GHz");
         OperatorResp operatorResp = new OperatorResp();
         operatorResp.setName("cqq");
