@@ -14,12 +14,14 @@ import com.aibton.server.monitor.data.response.system.UsageResp;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -40,7 +42,12 @@ public class BasicController {
         String line = "";
         List<String> processList = new ArrayList<String>();
         while ((line = input.readLine()) != null) {
-            processList.add(line);
+            List<String> splits = Arrays.asList(line.split(" "));
+            if (!CollectionUtils.isEmpty(splits) && splits.get(0).equals("Mem:")) {
+                System.out.println(splits.get(1));
+                System.out.println(splits.get(2));
+                System.out.println(line);
+            }
             System.out.println(line);
         }
         UsageResp mem = new UsageResp();
