@@ -40,21 +40,20 @@ public class BasicController {
         Process process = Runtime.getRuntime().exec("free -m");
         BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
         String line = "";
-        List<String> processList = new ArrayList<String>();
+        String totalMem = "";
+        String useMem = "";
         while ((line = input.readLine()) != null) {
             List<String> splits = Arrays.asList(line.split("\\s+"));
             if (!CollectionUtils.isEmpty(splits) && splits.get(0).equals("Mem:")) {
-                System.out.println(splits.size());
-                System.out.println(splits.get(1));
-                System.out.println(splits.get(2));
-                System.out.println(line);
+                totalMem = splits.get(1);
+                useMem = splits.get(2);
+                break;
             }
-            System.out.println(line);
         }
         UsageResp mem = new UsageResp();
         mem.setName("内存");
-        mem.setPercent("78");
-        mem.setTotal("16782M");
+        mem.setPercent((Integer.parseInt(useMem) / Integer.parseInt(totalMem)) + "");
+        mem.setTotal(totalMem + "M");
         UsageResp cpu = new UsageResp();
         cpu.setName("CPU");
         cpu.setPercent("43");
