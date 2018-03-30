@@ -10,13 +10,16 @@ import com.aibton.framework.util.ResponseUtils;
 import com.aibton.server.monitor.core.enums.ResponseCommonEnum;
 import com.aibton.server.monitor.core.utils.IdWorkerUtils;
 import com.aibton.server.monitor.dao.SysProjectRepository;
+import com.aibton.server.monitor.data.request.SysProjectAddReq;
 import com.aibton.server.monitor.entity.SysProject;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
@@ -25,6 +28,7 @@ import java.util.List;
  * @author huzhihui
  * @version $: v 0.1 2018 2018/3/26 18:37 huzhihui Exp $$
  */
+@Api(description = "系统项目相关接口")
 @RestController
 @RequestMapping(value = "sysProject")
 public class SysProjectController {
@@ -34,24 +38,28 @@ public class SysProjectController {
     @Autowired
     private SysProjectRepository sysProjectRepository;
 
-    /**
-     * 新增一个项目
-     *
-     * @param name
-     * @return
-     */
-    @RequestMapping(value = "addNewSysProject")
-    public ResponseNormal addNewSysProject(String name) {
-        AssertUtils.isNotEmpty(LOGGER, name, ResponseCommonEnum.PARAM_ERROR);
-        List<SysProject> sysProjects = sysProjectRepository.queryByNameIs(name);
+    @ApiOperation(value = "查询所有项目")
+    @GetMapping(value = "getAll")
+    public ResponseNormal<List<SysProject>> getAll() {
+        List<SysProject> sysProjects = sysProjectRepository.findAll();
+        return ResponseUtils.getData(true, sysProjects);
+    }
+
+    @ApiOperation(value = "新增一个项目")
+    @PostMapping(value = "addNewSysProject")
+    public ResponseNormal<String> addNewSysProject(@RequestBody SysProjectAddReq sysProjectAddReq) {
+        SysProject sysProject = new SysProject();
+        BeanUtils.copyProperties(sysProjectAddReq, sysProject);
+        AssertUtils.isNotEmpty(LOGGER, sysProject.getName(), ResponseCommonEnum.PARAM_ERROR);
+        List<SysProject> sysProjects = sysProjectRepository.queryByNameIs(sysProject.getName());
         if (!CollectionUtils.isEmpty(sysProjects)) {
             return ResponseUtils.getData(false, "操作失败，该项目已存在");
         }
-        SysProject sysProject = new SysProject();
         sysProject.setId(IdWorkerUtils.getId());
-        sysProject.setName(name);
         sysProject.setCreateTime(new Date());
         sysProjectRepository.save(sysProject);
         return ResponseUtils.getData(true, "操作成功");
     }
+
+
 }

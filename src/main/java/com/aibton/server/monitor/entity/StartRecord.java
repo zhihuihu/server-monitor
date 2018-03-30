@@ -42,6 +42,11 @@ public class StartRecord implements Serializable {
     private String operateSysUserName;
 
     /**
+     * 其他信息
+     */
+    private String extMap;
+
+    /**
      * 状态
      */
     private Integer state;
@@ -118,5 +123,13 @@ public class StartRecord implements Serializable {
 
     public void setFinishTime(Date finishTime) {
         this.finishTime = finishTime;
+    }
+
+    public String getExtMap() {
+        return extMap;
+    }
+
+    public void setExtMap(String extMap) {
+        this.extMap = extMap;
     }
 }

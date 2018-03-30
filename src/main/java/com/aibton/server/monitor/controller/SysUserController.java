@@ -5,9 +5,15 @@
 package com.aibton.server.monitor.controller;
 
 import com.aibton.framework.data.ResponseNormal;
+import com.aibton.server.monitor.data.request.LoginReq;
 import com.aibton.server.monitor.entity.SysUser;
 import com.aibton.server.monitor.service.inter.SysUserService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author huzhihui
  * @version $: v 0.1 2018 2018/3/26 14:54 huzhihui Exp $$
  */
+@Api(description = "用户相关接口")
 @RestController
 @RequestMapping(value = "sysUser")
 public class SysUserController {
@@ -22,14 +29,11 @@ public class SysUserController {
     @Autowired
     private SysUserService sysUserService;
 
-    /**
-     * 登录
-     *
-     * @param sysUser
-     * @return
-     */
-    @RequestMapping(value = "login")
-    public ResponseNormal login(SysUser sysUser) {
+    @ApiOperation(value = "用户登录")
+    @PostMapping(value = "login")
+    public ResponseNormal<String> login(@RequestBody LoginReq loginReq) {
+        SysUser sysUser = new SysUser();
+        BeanUtils.copyProperties(loginReq, sysUser);
         return sysUserService.login(sysUser);
     }
 
