@@ -86,6 +86,7 @@
     </dependencies>
 
     <build>
+        <finalName>server-monitor</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
