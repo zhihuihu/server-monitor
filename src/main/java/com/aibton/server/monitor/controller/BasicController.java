@@ -56,6 +56,7 @@ public class BasicController {
         mem.setTotal(totalMem + "M");
 
         process = Runtime.getRuntime().exec("top \\n exit");
+        input = new BufferedReader(new InputStreamReader(process.getInputStream()));
         String cpuUse = "";
         while ((line = input.readLine()) != null) {
             List<String> splits = Arrays.asList(line.split("\\s+"));
