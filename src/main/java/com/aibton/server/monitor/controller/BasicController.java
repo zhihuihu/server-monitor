@@ -42,7 +42,7 @@ public class BasicController {
         String line = "";
         List<String> processList = new ArrayList<String>();
         while ((line = input.readLine()) != null) {
-            List<String> splits = Arrays.asList(line.split(" "));
+            List<String> splits = Arrays.asList(line.split("\\s+"));
             if (!CollectionUtils.isEmpty(splits) && splits.get(0).equals("Mem:")) {
                 System.out.println(splits.size());
                 System.out.println(splits.get(1));
