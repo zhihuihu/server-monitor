@@ -55,7 +55,7 @@ public class BasicController {
         mem.setPercent((Double.parseDouble(useMem) / Double.parseDouble(totalMem)) + "");
         mem.setTotal(totalMem + "M");
 
-        process = Runtime.getRuntime().exec("top \\n exit");
+        process = Runtime.getRuntime().exec("top -bn 1 -i -c");
         input = new BufferedReader(new InputStreamReader(process.getInputStream()));
         String cpuUse = "";
         while ((line = input.readLine()) != null) {
