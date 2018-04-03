@@ -8,15 +8,28 @@ import com.aibton.framework.data.ResponseNormal;
 import com.aibton.framework.util.AssertUtils;
 import com.aibton.framework.util.ResponseUtils;
 import com.aibton.server.monitor.core.enums.ResponseCommonEnum;
+import com.aibton.server.monitor.core.utils.IdWorkerUtils;
+import com.aibton.server.monitor.core.utils.SessionUtils;
+import com.aibton.server.monitor.dao.StartRecordRepository;
 import com.aibton.server.monitor.data.request.RunProjectReq;
+import com.aibton.server.monitor.entity.StartRecord;
+import com.aibton.server.monitor.entity.SysUser;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 启动项目
@@ -31,6 +44,9 @@ public class StartProjectController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StartProjectController.class);
 
+    @Autowired
+    private StartRecordRepository startRecordRepository;
+
     @ApiOperation(value = "项目启动")
     @PostMapping(value = "run")
     public ResponseNormal run(@RequestBody RunProjectReq runProjectReq) {
@@ -38,6 +54,36 @@ public class StartProjectController {
         AssertUtils.isNotEmpty(LOGGER, runProjectReq.getBranch(), ResponseCommonEnum.PARAM_ERROR);
         AssertUtils.isNotEmpty(LOGGER, runProjectReq.getType(), ResponseCommonEnum.PARAM_ERROR);
 
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Process process = null;
+                try {
+                    SysUser loginSysUser = SessionUtils.getLoginUserInfo();
+                    StartRecord startRecord = new StartRecord();
+                    startRecord.setId(IdWorkerUtils.getId());
+                    startRecord.setSysProjectId(runProjectReq.getSysProjectId());
+                    startRecord.setSysProjectName(runProjectReq.getSysProjectId());
+                    startRecord.setOperateSysUserId(loginSysUser.getId());
+                    startRecord.setOperateSysUserName(loginSysUser.getName());
+                    startRecord.setOperateBranch(runProjectReq.getBranch());
+                    startRecord.setCreateTime(new Date());
+                    startRecordRepository.save(startRecord);
+                    process = Runtime.getRuntime().exec("free -m");
+                    BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                    String line = "";
+                    while ((line = input.readLine()) != null) {
+                        List<String> splits = Arrays.asList(line.split("\\s+"));
+                        
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+        thread.start();
 
 
         return ResponseUtils.getOtherData(true, "200000", "正在发布");
