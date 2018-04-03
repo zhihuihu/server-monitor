@@ -62,7 +62,7 @@ public class BasicController {
         }
         UsageResp mem = new UsageResp();
         mem.setName("内存");
-        mem.setPercent((Double.parseDouble(useMem) / Double.parseDouble(totalMem)) + "");
+        mem.setPercent((int) ((Double.parseDouble(useMem) / Double.parseDouble(totalMem)) * 100) + "");
         mem.setTotal(totalMem + "M");
 
         process = Runtime.getRuntime().exec("top -bn 1 -i -c");
@@ -78,7 +78,7 @@ public class BasicController {
 
         UsageResp cpu = new UsageResp();
         cpu.setName("CPU");
-        cpu.setPercent((int) (Long.valueOf(useMem) * 100) + "");
+        cpu.setPercent(cpuUse);
         cpu.setTotal("3.5GHz");
 
         OperatorResp operatorResp = new OperatorResp();
