@@ -42,6 +42,11 @@ public class StartRecord implements Serializable {
     private String operateSysUserName;
 
     /**
+     * 操作分支
+     */
+    private String operateBranch;
+
+    /**
      * 其他信息
      */
     private String extMap;
@@ -131,5 +136,13 @@ public class StartRecord implements Serializable {
 
     public void setExtMap(String extMap) {
         this.extMap = extMap;
+    }
+
+    public String getOperateBranch() {
+        return operateBranch;
+    }
+
+    public void setOperateBranch(String operateBranch) {
+        this.operateBranch = operateBranch;
     }
 }

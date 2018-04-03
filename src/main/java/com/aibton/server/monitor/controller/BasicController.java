@@ -7,13 +7,20 @@ package com.aibton.server.monitor.controller;
 import com.aibton.framework.data.ResponseNormal;
 import com.aibton.framework.util.ResponseUtils;
 import com.aibton.framework.util.TimeUtils;
+import com.aibton.server.monitor.dao.StartRecordRepository;
 import com.aibton.server.monitor.data.response.SysInfoResp;
 import com.aibton.server.monitor.data.response.system.OperatorResp;
 import com.aibton.server.monitor.data.response.system.ProjectStatusResp;
 import com.aibton.server.monitor.data.response.system.UsageResp;
+import com.aibton.server.monitor.entity.StartRecord;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,6 +39,9 @@ import java.util.List;
 @Api(description = "基本状态相关接口")
 @RestController
 public class BasicController {
+
+    @Autowired
+    private StartRecordRepository startRecordRepository;
 
     @ApiOperation(value = "系统基本情况")
     @GetMapping(value = "system/info")
@@ -68,12 +78,23 @@ public class BasicController {
 
         UsageResp cpu = new UsageResp();
         cpu.setName("CPU");
-        cpu.setPercent(cpuUse);
+        cpu.setPercent((int) (Long.valueOf(useMem) * 100) + "");
         cpu.setTotal("3.5GHz");
+
         OperatorResp operatorResp = new OperatorResp();
-        operatorResp.setName("cqq");
-        operatorResp.setBranch("master");
-        operatorResp.setTime(new Date());
+
+        Sort sort = new Sort(Sort.Direction.DESC, "createTime");
+        Pageable pageable = PageRequest.of(1, 1, sort);
+        Page<StartRecord> startRecordPage = startRecordRepository.findAll(pageable);
+        if (startRecordPage.getTotalPages() == 0) {
+            operatorResp.setName("无人操作");
+            operatorResp.setBranch("没有分支");
+            operatorResp.setTime(new Date());
+        } else {
+            operatorResp.setName(startRecordPage.getContent().get(0).getOperateSysUserName());
+            operatorResp.setBranch(startRecordPage.getContent().get(0).getOperateBranch());
+            operatorResp.setTime(startRecordPage.getContent().get(0).getCreateTime());
+        }
 
         sysInfoResp.setMemory(mem);
         sysInfoResp.setCpu(cpu);
