@@ -11,8 +11,10 @@ import com.aibton.server.monitor.core.enums.ResponseCommonEnum;
 import com.aibton.server.monitor.core.utils.IdWorkerUtils;
 import com.aibton.server.monitor.core.utils.SessionUtils;
 import com.aibton.server.monitor.dao.StartRecordRepository;
+import com.aibton.server.monitor.dao.SysProjectRepository;
 import com.aibton.server.monitor.data.request.RunProjectReq;
 import com.aibton.server.monitor.entity.StartRecord;
+import com.aibton.server.monitor.entity.SysProject;
 import com.aibton.server.monitor.entity.SysUser;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -47,6 +49,9 @@ public class StartProjectController {
     @Autowired
     private StartRecordRepository startRecordRepository;
 
+    @Autowired
+    private SysProjectRepository sysProjectRepository;
+
     @ApiOperation(value = "项目启动")
     @PostMapping(value = "run")
     public ResponseNormal run(@RequestBody RunProjectReq runProjectReq) {
@@ -69,12 +74,16 @@ public class StartProjectController {
                     startRecord.setOperateBranch(runProjectReq.getBranch());
                     startRecord.setCreateTime(new Date());
                     startRecordRepository.save(startRecord);
-                    process = Runtime.getRuntime().exec("free -m");
+                    SysProject sysProject = sysProjectRepository.getOne(runProjectReq.getSysProjectId());
+                    String cmd = "cbd " + sysProject.getName() + " " + runProjectReq.getBranch() + " " + sysProject.getPidSearchValue()
+                            + " " + sysProject.getBuildFolder() + " " + sysProject.getDeployProjectFolderName() + " " + sysProject.getDeployFolder()
+                            + " " + sysProject.getStartCmdFolder() + " " + sysProject.getOpenConnectUrl();
+                    process = Runtime.getRuntime().exec(cmd);
                     BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
                     String line = "";
                     while ((line = input.readLine()) != null) {
                         List<String> splits = Arrays.asList(line.split("\\s+"));
-                        
+
                     }
 
                 } catch (IOException e) {

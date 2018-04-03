@@ -58,6 +58,11 @@ public class SysProject {
     private String deployProjectFolderName;
 
     /**
+     * 运行命令文件夹
+     */
+    private String startCmdFolder;
+
+    /**
      * 测试连接URL
      */
     private String openConnectUrl;
@@ -145,5 +150,13 @@ public class SysProject {
 
     public void setDeployProjectFolderName(String deployProjectFolderName) {
         this.deployProjectFolderName = deployProjectFolderName;
+    }
+
+    public String getStartCmdFolder() {
+        return startCmdFolder;
+    }
+
+    public void setStartCmdFolder(String startCmdFolder) {
+        this.startCmdFolder = startCmdFolder;
     }
 }
