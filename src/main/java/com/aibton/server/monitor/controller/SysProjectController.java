@@ -56,7 +56,7 @@ public class SysProjectController {
     @GetMapping(value = "getAllBranch")
     public ResponseNormal<List<String>> getAllBranch() throws Exception {
 
-        Process process = Runtime.getRuntime().exec(userSystemProperties.getProjectWorkspace() + " /n" + "git branch -v");
+        Process process = Runtime.getRuntime().exec("cd " + userSystemProperties.getProjectWorkspace() + " /n" + "git branch -v");
         BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
         String line = "";
         while ((line = input.readLine()) != null) {
