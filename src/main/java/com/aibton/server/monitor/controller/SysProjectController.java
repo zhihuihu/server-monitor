@@ -63,6 +63,7 @@ public class SysProjectController {
                 "&&",
                 "git branch -v"};
         Process process = Runtime.getRuntime().exec(cmds);
+        process.waitFor();
         BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
         String line = "";
         while ((line = input.readLine()) != null) {
