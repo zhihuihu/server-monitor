@@ -62,7 +62,7 @@ public class SysProjectController {
                 "cd " + userSystemProperties.getProjectWorkspace(),
                 "&&",
                 "git branch -v"};*/
-        String[] cmds = {"/bin/sh", "-c", "cd /Users/jack/myapp", "&&",
+        String[] cmds = {"/bin/sh", "-c", "cfas fsa fsad fsadf/Users/jack/myapp", "&&",
                 "mvn test -B -U -Dtest=com.xxx.XXXTest,"};
         Process process = Runtime.getRuntime().exec(cmds);
         process.waitFor();
