@@ -56,12 +56,14 @@ public class SysProjectController {
     @GetMapping(value = "getAllBranch")
     public ResponseNormal<List<String>> getAllBranch() throws Exception {
 
-        String[] cmds = new String[]{
+        /*String[] cmds = new String[]{
                 "/bin/sh",
                 "-c",
                 "cd " + userSystemProperties.getProjectWorkspace(),
                 "&&",
-                "git branch -v"};
+                "git branch -v"};*/
+        String[] cmds = {"/bin/sh", "-c", "cd /Users/jack/myapp", "&&",
+                "mvn test -B -U -Dtest=com.xxx.XXXTest,"};
         Process process = Runtime.getRuntime().exec(cmds);
         process.waitFor();
         BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
