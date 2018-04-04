@@ -65,18 +65,17 @@ public class SysProjectController {
         process.waitFor();
         BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
         String line = "";
+        List<String> branchs = new ArrayList<>();
         while ((line = input.readLine()) != null) {
-            System.out.println(line);
             List<String> splits = Arrays.asList(line.split("\\s+"));
-            if (!CollectionUtils.isEmpty(splits) && splits.get(0).equals("*")) {
-                System.out.println(line);
-                break;
+            if (!CollectionUtils.isEmpty(splits)) {
+                if (splits.get(0).equals("*")) {
+                    branchs.add(splits.get(1));
+                } else {
+                    branchs.add(splits.get(0));
+                }
             }
         }
-        List<String> branchs = new ArrayList<>();
-        branchs.add("master");
-        branchs.add("feature/WECHAT-20180321");
-        branchs.add("feature/FAST-RUN-BOOT");
         return ResponseUtils.getData(true, branchs);
     }
 
