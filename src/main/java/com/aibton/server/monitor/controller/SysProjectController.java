@@ -60,7 +60,7 @@ public class SysProjectController {
                 "/bin/sh",
                 "-c",
                 "cd " + userSystemProperties.getProjectWorkspace(),
-                "git branch -v"};
+                "git branch -v > FILE"};
         Process process = Runtime.getRuntime().exec(cmds);
         BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
         String line = "";
