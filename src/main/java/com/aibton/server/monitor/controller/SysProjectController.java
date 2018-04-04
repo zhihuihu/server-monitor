@@ -69,11 +69,7 @@ public class SysProjectController {
         while ((line = input.readLine()) != null) {
             List<String> splits = Arrays.asList(line.split("\\s+"));
             if (!CollectionUtils.isEmpty(splits)) {
-                if (splits.get(0).equals("*")) {
-                    branchs.add(splits.get(1));
-                } else {
-                    branchs.add(splits.get(0));
-                }
+                branchs.add(splits.get(1));
             }
         }
         return ResponseUtils.getData(true, branchs);
