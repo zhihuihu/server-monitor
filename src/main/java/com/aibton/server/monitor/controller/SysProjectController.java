@@ -60,6 +60,7 @@ public class SysProjectController {
         BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
         String line = "";
         while ((line = input.readLine()) != null) {
+            System.out.println(line);
             List<String> splits = Arrays.asList(line.split("\\s+"));
             if (!CollectionUtils.isEmpty(splits) && splits.get(0).equals("*")) {
                 System.out.println(line);
