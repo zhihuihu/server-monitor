@@ -7,6 +7,7 @@ package com.aibton.server.monitor.controller;
 import com.aibton.framework.data.ResponseNormal;
 import com.aibton.framework.util.AssertUtils;
 import com.aibton.framework.util.ResponseUtils;
+import com.aibton.server.monitor.config.UserSystemProperties;
 import com.aibton.server.monitor.core.enums.ResponseCommonEnum;
 import com.aibton.server.monitor.core.utils.IdWorkerUtils;
 import com.aibton.server.monitor.dao.SysProjectRepository;
@@ -21,7 +22,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -38,6 +42,8 @@ public class SysProjectController {
 
     @Autowired
     private SysProjectRepository sysProjectRepository;
+    @Autowired
+    private UserSystemProperties userSystemProperties;
 
     @ApiOperation(value = "查询所有项目")
     @GetMapping(value = "getAll")
@@ -48,7 +54,18 @@ public class SysProjectController {
 
     @ApiOperation(value = "查询所有分支")
     @GetMapping(value = "getAllBranch")
-    public ResponseNormal<List<String>> getAllBranch() {
+    public ResponseNormal<List<String>> getAllBranch() throws Exception {
+
+        Process process = Runtime.getRuntime().exec(userSystemProperties.getProjectWorkspace() + " /n" + "git branch -v");
+        BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        String line = "";
+        while ((line = input.readLine()) != null) {
+            List<String> splits = Arrays.asList(line.split("\\s+"));
+            if (!CollectionUtils.isEmpty(splits) && splits.get(0).equals("*")) {
+                System.out.println(line);
+                break;
+            }
+        }
         List<String> branchs = new ArrayList<>();
         branchs.add("master");
         branchs.add("feature/WECHAT-20180321");
