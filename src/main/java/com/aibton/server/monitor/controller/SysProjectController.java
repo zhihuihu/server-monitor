@@ -57,8 +57,6 @@ public class SysProjectController {
     public ResponseNormal<List<String>> getAllBranch() throws Exception {
 
         String[] cmds = new String[]{
-                "/bin/sh",
-                "-c",
                 "cd " + userSystemProperties.getProjectWorkspace(),
                 "git branch -v"};
         Process process = Runtime.getRuntime().exec(cmds);
