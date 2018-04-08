@@ -17,6 +17,9 @@ public class RunProjectReq {
     @ApiModelProperty(value = "项目ID")
     private String sysProjectId;
 
+    @ApiModelProperty(value = "项目名称")
+    private String sysProjectName;
+
     @ApiModelProperty(value = "分支名称")
     private String branch;
 
@@ -45,5 +48,13 @@ public class RunProjectReq {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getSysProjectName() {
+        return sysProjectName;
+    }
+
+    public void setSysProjectName(String sysProjectName) {
+        this.sysProjectName = sysProjectName;
     }
 }

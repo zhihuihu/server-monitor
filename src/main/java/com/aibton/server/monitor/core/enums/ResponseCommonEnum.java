@@ -13,7 +13,12 @@ public enum ResponseCommonEnum implements IEnum<String, String, String> {
     /**
      * 操作失败，参数错误
      */
-    PARAM_ERROR("000000", "操作失败，参数错误", null),;
+    PARAM_ERROR("000000", "操作失败，参数错误", null),
+
+    /**
+     * 操作失败，未登录系统
+     */
+    NOT_LOGIN("200000", "操作失败，未登录系统", null),;
 
     private String code;
 

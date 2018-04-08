@@ -68,7 +68,7 @@ public class StartProjectController {
                     StartRecord startRecord = new StartRecord();
                     startRecord.setId(IdWorkerUtils.getId());
                     startRecord.setSysProjectId(runProjectReq.getSysProjectId());
-                    startRecord.setSysProjectName(runProjectReq.getSysProjectId());
+                    startRecord.setSysProjectName(runProjectReq.getSysProjectName());
                     startRecord.setOperateSysUserId(loginSysUser.getId());
                     startRecord.setOperateSysUserName(loginSysUser.getName());
                     startRecord.setOperateBranch(runProjectReq.getBranch());
