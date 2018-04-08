@@ -18,5 +18,5 @@ public @interface UrlAuth {
      *
      * @return
      */
-    UrlAuthTypeEnum value() default UrlAuthTypeEnum.WX_AUTH;
+    UrlAuthTypeEnum value() default UrlAuthTypeEnum.NEED_LOGIN;
 }
