@@ -9,6 +9,8 @@ import com.aibton.framework.util.ResponseUtils;
 import com.aibton.server.monitor.core.utils.SessionUtils;
 import com.aibton.server.monitor.data.request.LoginReq;
 import com.aibton.server.monitor.entity.SysUser;
+import com.aibton.server.monitor.interceptor.UrlAuth;
+import com.aibton.server.monitor.interceptor.UrlAuthTypeEnum;
 import com.aibton.server.monitor.service.inter.SysUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -29,6 +31,7 @@ public class SysUserController {
     private SysUserService sysUserService;
 
     @ApiOperation(value = "用户登录")
+    @UrlAuth(value = UrlAuthTypeEnum.NEED_LOGIN)
     @PostMapping(value = "login")
     public ResponseNormal<String> login(@RequestBody LoginReq loginReq) {
         SysUser sysUser = new SysUser();
@@ -37,6 +40,7 @@ public class SysUserController {
     }
 
     @ApiOperation(value = "获取登录用户信息")
+    @UrlAuth(value = UrlAuthTypeEnum.NEED_LOGIN)
     @GetMapping(value = "loginUserInfo")
     public ResponseNormal<SysUser> loginUserInfo() {
         return ResponseUtils.getData(true, SessionUtils.getLoginUserInfo());

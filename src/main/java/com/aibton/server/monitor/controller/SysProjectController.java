@@ -13,6 +13,8 @@ import com.aibton.server.monitor.core.utils.IdWorkerUtils;
 import com.aibton.server.monitor.dao.SysProjectRepository;
 import com.aibton.server.monitor.data.request.SysProjectAddReq;
 import com.aibton.server.monitor.entity.SysProject;
+import com.aibton.server.monitor.interceptor.UrlAuth;
+import com.aibton.server.monitor.interceptor.UrlAuthTypeEnum;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -46,6 +48,7 @@ public class SysProjectController {
     private UserSystemProperties userSystemProperties;
 
     @ApiOperation(value = "查询所有项目")
+    @UrlAuth(value = UrlAuthTypeEnum.NEED_LOGIN)
     @GetMapping(value = "getAll")
     public ResponseNormal<List<SysProject>> getAll() {
         List<SysProject> sysProjects = sysProjectRepository.findAll();
@@ -53,6 +56,7 @@ public class SysProjectController {
     }
 
     @ApiOperation(value = "查询所有分支")
+    @UrlAuth(value = UrlAuthTypeEnum.NEED_LOGIN)
     @GetMapping(value = "getAllBranch")
     public ResponseNormal<List<String>> getAllBranch() throws Exception {
 
@@ -76,6 +80,7 @@ public class SysProjectController {
     }
 
     @ApiOperation(value = "新增一个项目")
+    @UrlAuth(value = UrlAuthTypeEnum.NEED_LOGIN)
     @PostMapping(value = "addNewSysProject")
     public ResponseNormal<String> addNewSysProject(@RequestBody SysProjectAddReq sysProjectAddReq) {
         SysProject sysProject = new SysProject();

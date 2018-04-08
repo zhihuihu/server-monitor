@@ -16,6 +16,8 @@ import com.aibton.server.monitor.data.request.RunProjectReq;
 import com.aibton.server.monitor.entity.StartRecord;
 import com.aibton.server.monitor.entity.SysProject;
 import com.aibton.server.monitor.entity.SysUser;
+import com.aibton.server.monitor.interceptor.UrlAuth;
+import com.aibton.server.monitor.interceptor.UrlAuthTypeEnum;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -53,6 +55,7 @@ public class StartProjectController {
     private SysProjectRepository sysProjectRepository;
 
     @ApiOperation(value = "项目启动")
+    @UrlAuth(value = UrlAuthTypeEnum.NEED_LOGIN)
     @PostMapping(value = "run")
     public ResponseNormal run(@RequestBody RunProjectReq runProjectReq) {
         AssertUtils.isNotEmpty(LOGGER, runProjectReq.getSysProjectId(), ResponseCommonEnum.PARAM_ERROR);
@@ -99,6 +102,7 @@ public class StartProjectController {
     }
 
     @ApiOperation(value = "查询项目启动状态")
+    @UrlAuth(value = UrlAuthTypeEnum.NEED_LOGIN)
     @PostMapping(value = "runStatus")
     public ResponseNormal runStatus() {
         return ResponseUtils.getData(true, "发布成功");

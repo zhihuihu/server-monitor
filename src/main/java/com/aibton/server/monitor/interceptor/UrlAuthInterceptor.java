@@ -5,11 +5,13 @@
 package com.aibton.server.monitor.interceptor;
 
 import com.aibton.framework.exception.ExtItemException;
+import com.aibton.server.monitor.config.UserSystemProperties;
 import com.aibton.server.monitor.core.enums.ResponseCommonEnum;
 import com.aibton.server.monitor.core.utils.SessionUtils;
 import com.aibton.server.monitor.entity.SysUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -30,8 +32,15 @@ public class UrlAuthInterceptor implements HandlerInterceptor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UrlAuthInterceptor.class);
 
+    @Autowired
+    private UserSystemProperties userSystemProperties;
+
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
+        //--如果不需要权限认证直接跳过
+        if (!userSystemProperties.getOpenUrlAuth()) {
+            return true;
+        }
         SysUser loginSysUser = SessionUtils.getLoginUserInfo();
         if (o instanceof HandlerMethod) {
             HandlerMethod handlerMethod = (HandlerMethod) o;

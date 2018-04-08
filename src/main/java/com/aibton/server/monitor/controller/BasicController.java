@@ -13,6 +13,8 @@ import com.aibton.server.monitor.data.response.system.OperatorResp;
 import com.aibton.server.monitor.data.response.system.ProjectStatusResp;
 import com.aibton.server.monitor.data.response.system.UsageResp;
 import com.aibton.server.monitor.entity.StartRecord;
+import com.aibton.server.monitor.interceptor.UrlAuth;
+import com.aibton.server.monitor.interceptor.UrlAuthTypeEnum;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
@@ -44,6 +46,7 @@ public class BasicController {
     private StartRecordRepository startRecordRepository;
 
     @ApiOperation(value = "系统基本情况")
+    @UrlAuth(value = UrlAuthTypeEnum.NEED_LOGIN)
     @GetMapping(value = "system/info")
     public ResponseNormal<SysInfoResp> sysInfo() throws Exception {
         SysInfoResp sysInfoResp = new SysInfoResp();
@@ -104,6 +107,7 @@ public class BasicController {
     }
 
     @ApiOperation(value = "系统运行项目基本情况")
+    @UrlAuth(value = UrlAuthTypeEnum.NEED_LOGIN)
     @GetMapping(value = "system/projectStatus")
     public ResponseNormal<List<ProjectStatusResp>> projectStatus() {
         List<ProjectStatusResp> projectStatusResps = new ArrayList<>();
