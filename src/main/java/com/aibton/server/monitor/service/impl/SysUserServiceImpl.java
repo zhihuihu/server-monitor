@@ -49,6 +49,7 @@ public class SysUserServiceImpl implements SysUserService {
             SysUser sysUserLogin = sysUsers.get(0);
             sysUserLogin.setLoginTime(new Date());
             sysUserRepository.save(sysUserLogin);
+            sysUser = sysUserLogin;
         }
         SessionUtils.setLoginUserInfo(sysUser);
         return ResponseUtils.getData(true, "操作成功，用户登录成功");
