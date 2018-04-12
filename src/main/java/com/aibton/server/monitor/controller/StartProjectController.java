@@ -73,7 +73,7 @@ public class StartProjectController {
     }
 
     @Async
-    public void asyncStartProject(@RequestBody RunProjectReq runProjectReq, SysUser loginSysUser) throws IOException {
+    public void asyncStartProject(RunProjectReq runProjectReq, SysUser loginSysUser) throws IOException {
         Process process;
         StartRecord startRecord = new StartRecord();
         startRecord.setId(IdWorkerUtils.getId());
@@ -88,7 +88,12 @@ public class StartProjectController {
         String cmd = "cbd " + sysProject.getName() + " " + runProjectReq.getBranch() + " " + sysProject.getPidSearchValue()
                 + " " + sysProject.getBuildFolder() + " " + sysProject.getDeployProjectFolderName() + " " + sysProject.getDeployFolder()
                 + " " + sysProject.getStartCmdFolder() + " " + sysProject.getOpenConnectUrl();
-        process = Runtime.getRuntime().exec(cmd);
+        String[] cmds = new String[]{
+                "/bin/sh",
+                "-c",
+                cmd
+        };
+        process = Runtime.getRuntime().exec(cmds);
         BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
         String line = "";
         while ((line = input.readLine()) != null) {
