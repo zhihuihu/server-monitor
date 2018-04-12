@@ -8,6 +8,7 @@ import com.aibton.framework.data.ResponseNormal;
 import com.aibton.framework.util.AssertUtils;
 import com.aibton.framework.util.JackSonUtils;
 import com.aibton.framework.util.ResponseUtils;
+import com.aibton.server.monitor.core.enums.ResponseBusEnum;
 import com.aibton.server.monitor.core.enums.ResponseCommonEnum;
 import com.aibton.server.monitor.core.utils.IdWorkerUtils;
 import com.aibton.server.monitor.core.utils.SessionUtils;
@@ -99,13 +100,13 @@ public class StartProjectController {
         thread.start();
 
 
-        return ResponseUtils.getOtherData(true, "200000", "正在发布");
+        return ResponseUtils.getOtherData(true, ResponseBusEnum.PROJECT_STARTING.getCode(), ResponseBusEnum.PROJECT_STARTING.getValue());
     }
 
     @ApiOperation(value = "查询项目启动状态")
     @UrlAuth(value = UrlAuthTypeEnum.NEED_LOGIN)
     @PostMapping(value = "runStatus")
     public ResponseNormal runStatus() {
-        return ResponseUtils.getData(true, "发布成功");
+        return ResponseUtils.getOtherData(true, ResponseBusEnum.PROJECT_START_SUCCESS.getCode(), ResponseBusEnum.PROJECT_START_SUCCESS.getValue());
     }
 }
