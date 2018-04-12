@@ -25,7 +25,7 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -60,32 +60,19 @@ public class StartProjectController {
     @ApiOperation(value = "项目启动")
     @UrlAuth(value = UrlAuthTypeEnum.NEED_LOGIN)
     @PostMapping(value = "run")
-    public ResponseNormal run(@RequestBody RunProjectReq runProjectReq) {
+    public ResponseNormal run(@RequestBody RunProjectReq runProjectReq) throws Exception {
         AssertUtils.isNotEmpty(LOGGER, runProjectReq.getSysProjectId(), ResponseCommonEnum.PARAM_ERROR);
         AssertUtils.isNotEmpty(LOGGER, runProjectReq.getBranch(), ResponseCommonEnum.PARAM_ERROR);
         AssertUtils.isNotEmpty(LOGGER, runProjectReq.getType(), ResponseCommonEnum.PARAM_ERROR);
         SysUser loginSysUser = SessionUtils.getLoginUserInfo();
         System.out.println(JackSonUtils.objectToJsonStr(loginSysUser));
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Process process = null;
-                try {
-                    asyncStartProject(runProjectReq, loginSysUser);
 
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        });
-        thread.start();
-
+        asyncStartProject(runProjectReq, loginSysUser);
 
         return ResponseUtils.getOtherData(true, ResponseBusEnum.PROJECT_STARTING.getCode(), ResponseBusEnum.PROJECT_STARTING.getValue());
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @Async
     public void asyncStartProject(@RequestBody RunProjectReq runProjectReq, SysUser loginSysUser) throws IOException {
         Process process;
         StartRecord startRecord = new StartRecord();
