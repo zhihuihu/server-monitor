@@ -98,7 +98,7 @@ public class StartProjectController {
         String line = "";
         while ((line = input.readLine()) != null) {
             List<String> splits = Arrays.asList(line.split("\\s+"));
-
+            System.out.println(line);
         }
     }
 
