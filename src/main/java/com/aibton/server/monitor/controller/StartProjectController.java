@@ -61,13 +61,12 @@ public class StartProjectController {
         AssertUtils.isNotEmpty(LOGGER, runProjectReq.getSysProjectId(), ResponseCommonEnum.PARAM_ERROR);
         AssertUtils.isNotEmpty(LOGGER, runProjectReq.getBranch(), ResponseCommonEnum.PARAM_ERROR);
         AssertUtils.isNotEmpty(LOGGER, runProjectReq.getType(), ResponseCommonEnum.PARAM_ERROR);
-
+        SysUser loginSysUser = SessionUtils.getLoginUserInfo();
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 Process process = null;
                 try {
-                    SysUser loginSysUser = SessionUtils.getLoginUserInfo();
                     StartRecord startRecord = new StartRecord();
                     startRecord.setId(IdWorkerUtils.getId());
                     startRecord.setSysProjectId(runProjectReq.getSysProjectId());
