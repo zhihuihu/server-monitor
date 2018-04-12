@@ -7,17 +7,14 @@ package com.aibton.server.monitor.controller;
 import com.aibton.framework.data.ResponseNormal;
 import com.aibton.framework.util.AssertUtils;
 import com.aibton.framework.util.JackSonUtils;
-import com.aibton.framework.util.LoggerUtils;
 import com.aibton.framework.util.ResponseUtils;
+import com.aibton.server.monitor.async.StartProjectAsync;
 import com.aibton.server.monitor.core.enums.ResponseBusEnum;
 import com.aibton.server.monitor.core.enums.ResponseCommonEnum;
-import com.aibton.server.monitor.core.utils.IdWorkerUtils;
 import com.aibton.server.monitor.core.utils.SessionUtils;
 import com.aibton.server.monitor.dao.StartRecordRepository;
 import com.aibton.server.monitor.dao.SysProjectRepository;
 import com.aibton.server.monitor.data.request.RunProjectReq;
-import com.aibton.server.monitor.entity.StartRecord;
-import com.aibton.server.monitor.entity.SysProject;
 import com.aibton.server.monitor.entity.SysUser;
 import com.aibton.server.monitor.interceptor.UrlAuth;
 import com.aibton.server.monitor.interceptor.UrlAuthTypeEnum;
@@ -26,17 +23,10 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
 
 /**
  * 启动项目
@@ -57,6 +47,9 @@ public class StartProjectController {
     @Autowired
     private SysProjectRepository sysProjectRepository;
 
+    @Autowired
+    private StartProjectAsync startProjectAsync;
+
     @ApiOperation(value = "项目启动")
     @UrlAuth(value = UrlAuthTypeEnum.NEED_LOGIN)
     @PostMapping(value = "run")
@@ -67,47 +60,9 @@ public class StartProjectController {
         SysUser loginSysUser = SessionUtils.getLoginUserInfo();
         System.out.println(JackSonUtils.objectToJsonStr(loginSysUser));
 
-        asyncStartProject(runProjectReq, loginSysUser);
+        startProjectAsync.asyncStartProject(runProjectReq, loginSysUser);
 
         return ResponseUtils.getOtherData(true, ResponseBusEnum.PROJECT_STARTING.getCode(), ResponseBusEnum.PROJECT_STARTING.getValue());
-    }
-
-    @Async
-    public void asyncStartProject(RunProjectReq runProjectReq, SysUser loginSysUser) throws Exception {
-        Process process;
-        StartRecord startRecord = new StartRecord();
-        startRecord.setId(IdWorkerUtils.getId());
-        startRecord.setSysProjectId(runProjectReq.getSysProjectId());
-        startRecord.setSysProjectName(runProjectReq.getSysProjectName());
-        startRecord.setOperateSysUserId(loginSysUser.getId());
-        startRecord.setOperateSysUserName(loginSysUser.getName());
-        startRecord.setOperateBranch(runProjectReq.getBranch());
-        startRecord.setCreateTime(new Date());
-        startRecordRepository.save(startRecord);
-        SysProject sysProject = sysProjectRepository.getOne(runProjectReq.getSysProjectId());
-        String cmd = "sh /usr/local/java/sh/auto-publish/cc-start.sh " + sysProject.getName() + " " + runProjectReq.getBranch() + " " + sysProject.getPidSearchValue()
-                + " " + sysProject.getBuildFolder() + " " + sysProject.getDeployProjectFolderName() + " " + sysProject.getDeployFolder()
-                + " " + sysProject.getStartCmdFolder() + " " + sysProject.getOpenConnectUrl();
-        System.out.println(cmd);
-        String[] cmds = new String[]{
-                "/bin/sh",
-                "-c",
-                cmd
-        };
-        LoggerUtils.info(LOGGER, "----执行开始");
-        process = Runtime.getRuntime().exec(cmd);
-        process.waitFor();
-        if (process.waitFor() != 0) {
-            LoggerUtils.info(LOGGER, "----执行完成");
-        } else {
-            LoggerUtils.error(LOGGER, "----执行失败");
-        }
-        BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
-        String line = "";
-        while ((line = input.readLine()) != null) {
-            List<String> splits = Arrays.asList(line.split("\\s+"));
-            System.out.println(line);
-        }
     }
 
     @ApiOperation(value = "查询项目启动状态")
