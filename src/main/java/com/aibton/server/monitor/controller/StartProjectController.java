@@ -93,7 +93,9 @@ public class StartProjectController {
                 "-c",
                 cmd
         };
+        System.out.println("----执行开始");
         process = Runtime.getRuntime().exec(cmds);
+        System.out.println("----执行完成");
         BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
         String line = "";
         while ((line = input.readLine()) != null) {
