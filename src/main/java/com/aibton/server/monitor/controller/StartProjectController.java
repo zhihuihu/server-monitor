@@ -85,7 +85,7 @@ public class StartProjectController {
         startRecord.setCreateTime(new Date());
         startRecordRepository.save(startRecord);
         SysProject sysProject = sysProjectRepository.getOne(runProjectReq.getSysProjectId());
-        String cmd = "cbd " + sysProject.getName() + " " + runProjectReq.getBranch() + " " + sysProject.getPidSearchValue()
+        String cmd = "sh /usr/local/java/sh/auto-publish/cc-start.sh " + sysProject.getName() + " " + runProjectReq.getBranch() + " " + sysProject.getPidSearchValue()
                 + " " + sysProject.getBuildFolder() + " " + sysProject.getDeployProjectFolderName() + " " + sysProject.getDeployFolder()
                 + " " + sysProject.getStartCmdFolder() + " " + sysProject.getOpenConnectUrl();
         System.out.println(cmd);
@@ -95,7 +95,7 @@ public class StartProjectController {
                 cmd
         };
         LoggerUtils.info(LOGGER, "----执行开始");
-        process = Runtime.getRuntime().exec(cmds);
+        process = Runtime.getRuntime().exec(cmd);
         process.waitFor();
         if (process.waitFor() != 0) {
             LoggerUtils.info(LOGGER, "----执行完成");
