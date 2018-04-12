@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -39,6 +40,7 @@ public class StartProjectAsync {
     private SysProjectRepository sysProjectRepository;
 
     @Async
+    @Transactional
     public void asyncStartProject(RunProjectReq runProjectReq, SysUser loginSysUser) throws Exception {
         Process process;
         StartRecord startRecord = new StartRecord();
