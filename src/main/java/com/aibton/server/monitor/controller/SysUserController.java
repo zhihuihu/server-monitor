@@ -31,7 +31,6 @@ public class SysUserController {
     private SysUserService sysUserService;
 
     @ApiOperation(value = "用户登录")
-    @UrlAuth(value = UrlAuthTypeEnum.NEED_LOGIN)
     @PostMapping(value = "login")
     public ResponseNormal<String> login(@RequestBody LoginReq loginReq) {
         SysUser sysUser = new SysUser();
