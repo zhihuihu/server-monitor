@@ -7,6 +7,7 @@ package com.aibton.server.monitor.controller;
 import com.aibton.framework.data.ResponseNormal;
 import com.aibton.framework.util.AssertUtils;
 import com.aibton.framework.util.JackSonUtils;
+import com.aibton.framework.util.LoggerUtils;
 import com.aibton.framework.util.ResponseUtils;
 import com.aibton.server.monitor.core.enums.ResponseBusEnum;
 import com.aibton.server.monitor.core.enums.ResponseCommonEnum;
@@ -32,7 +33,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Date;
@@ -73,7 +73,7 @@ public class StartProjectController {
     }
 
     @Async
-    public void asyncStartProject(RunProjectReq runProjectReq, SysUser loginSysUser) throws IOException {
+    public void asyncStartProject(RunProjectReq runProjectReq, SysUser loginSysUser) throws Exception {
         Process process;
         StartRecord startRecord = new StartRecord();
         startRecord.setId(IdWorkerUtils.getId());
@@ -94,9 +94,14 @@ public class StartProjectController {
                 "-c",
                 cmd
         };
-        System.out.println("----执行开始");
+        LoggerUtils.info(LOGGER, "----执行开始");
         process = Runtime.getRuntime().exec(cmds);
-        System.out.println("----执行完成");
+
+        if (process.waitFor() != 0) {
+            LoggerUtils.info(LOGGER, "----执行完成");
+        } else {
+            LoggerUtils.error(LOGGER, "----执行失败");
+        }
         BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
         String line = "";
         while ((line = input.readLine()) != null) {
