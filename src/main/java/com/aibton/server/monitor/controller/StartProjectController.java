@@ -6,6 +6,7 @@ package com.aibton.server.monitor.controller;
 
 import com.aibton.framework.data.ResponseNormal;
 import com.aibton.framework.util.AssertUtils;
+import com.aibton.framework.util.JackSonUtils;
 import com.aibton.framework.util.ResponseUtils;
 import com.aibton.server.monitor.core.enums.ResponseCommonEnum;
 import com.aibton.server.monitor.core.utils.IdWorkerUtils;
@@ -62,6 +63,7 @@ public class StartProjectController {
         AssertUtils.isNotEmpty(LOGGER, runProjectReq.getBranch(), ResponseCommonEnum.PARAM_ERROR);
         AssertUtils.isNotEmpty(LOGGER, runProjectReq.getType(), ResponseCommonEnum.PARAM_ERROR);
         SysUser loginSysUser = SessionUtils.getLoginUserInfo();
+        System.out.println(JackSonUtils.objectToJsonStr(loginSysUser));
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
