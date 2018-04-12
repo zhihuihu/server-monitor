@@ -20,10 +20,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
 /**
  * @author huzhihui
@@ -40,7 +39,7 @@ public class StartProjectAsync {
     private SysProjectRepository sysProjectRepository;
 
     @Async
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void asyncStartProject(RunProjectReq runProjectReq, SysUser loginSysUser) throws Exception {
         Process process;
         StartRecord startRecord = new StartRecord();
@@ -64,17 +63,43 @@ public class StartProjectAsync {
         };
         LoggerUtils.info(LOGGER, "----执行开始");
         process = Runtime.getRuntime().exec(cmd);
-        if (process.waitFor() != 0) {
-            LoggerUtils.info(LOGGER, "----执行失败");
-        } else {
-            LoggerUtils.error(LOGGER, "----执行成功");
-        }
-        BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
-        String line = "";
-        while ((line = input.readLine()) != null) {
-            List<String> splits = Arrays.asList(line.split("\\s+"));
+
+        final InputStream is1 = process.getInputStream();
+
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+
+                BufferedReader br = new BufferedReader(new InputStreamReader(is1));
+
+                try {
+
+                    while (br.readLine() != null) {
+                    }
+
+                } catch (Exception e) {
+
+                    e.printStackTrace();
+
+                }
+
+            }
+
+        }).start(); // 启动单独的线程来清空p.getInputStream()的缓冲区
+
+        InputStream is2 = process.getErrorStream();
+
+        BufferedReader br2 = new BufferedReader(new InputStreamReader(is2));
+
+        StringBuilder buf = new StringBuilder(); // 保存输出结果流
+
+        String line = null;
+
+        while ((line = br2.readLine()) != null) {
             System.out.println(line);
         }
+
     }
 
 }
