@@ -60,7 +60,6 @@ public class StartProjectController {
     @ApiOperation(value = "项目启动")
     @UrlAuth(value = UrlAuthTypeEnum.NEED_LOGIN)
     @PostMapping(value = "run")
-    @Transactional
     public ResponseNormal run(@RequestBody RunProjectReq runProjectReq) {
         AssertUtils.isNotEmpty(LOGGER, runProjectReq.getSysProjectId(), ResponseCommonEnum.PARAM_ERROR);
         AssertUtils.isNotEmpty(LOGGER, runProjectReq.getBranch(), ResponseCommonEnum.PARAM_ERROR);
@@ -72,26 +71,7 @@ public class StartProjectController {
             public void run() {
                 Process process = null;
                 try {
-                    StartRecord startRecord = new StartRecord();
-                    startRecord.setId(IdWorkerUtils.getId());
-                    startRecord.setSysProjectId(runProjectReq.getSysProjectId());
-                    startRecord.setSysProjectName(runProjectReq.getSysProjectName());
-                    startRecord.setOperateSysUserId(loginSysUser.getId());
-                    startRecord.setOperateSysUserName(loginSysUser.getName());
-                    startRecord.setOperateBranch(runProjectReq.getBranch());
-                    startRecord.setCreateTime(new Date());
-                    startRecordRepository.save(startRecord);
-                    SysProject sysProject = sysProjectRepository.getOne(runProjectReq.getSysProjectId());
-                    String cmd = "cbd " + sysProject.getName() + " " + runProjectReq.getBranch() + " " + sysProject.getPidSearchValue()
-                            + " " + sysProject.getBuildFolder() + " " + sysProject.getDeployProjectFolderName() + " " + sysProject.getDeployFolder()
-                            + " " + sysProject.getStartCmdFolder() + " " + sysProject.getOpenConnectUrl();
-                    process = Runtime.getRuntime().exec(cmd);
-                    BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                    String line = "";
-                    while ((line = input.readLine()) != null) {
-                        List<String> splits = Arrays.asList(line.split("\\s+"));
-
-                    }
+                    asyncStartProject(runProjectReq, loginSysUser);
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -105,10 +85,36 @@ public class StartProjectController {
         return ResponseUtils.getOtherData(true, ResponseBusEnum.PROJECT_STARTING.getCode(), ResponseBusEnum.PROJECT_STARTING.getValue());
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    public void asyncStartProject(@RequestBody RunProjectReq runProjectReq, SysUser loginSysUser) throws IOException {
+        Process process;
+        StartRecord startRecord = new StartRecord();
+        startRecord.setId(IdWorkerUtils.getId());
+        startRecord.setSysProjectId(runProjectReq.getSysProjectId());
+        startRecord.setSysProjectName(runProjectReq.getSysProjectName());
+        startRecord.setOperateSysUserId(loginSysUser.getId());
+        startRecord.setOperateSysUserName(loginSysUser.getName());
+        startRecord.setOperateBranch(runProjectReq.getBranch());
+        startRecord.setCreateTime(new Date());
+        startRecordRepository.save(startRecord);
+        SysProject sysProject = sysProjectRepository.getOne(runProjectReq.getSysProjectId());
+        String cmd = "cbd " + sysProject.getName() + " " + runProjectReq.getBranch() + " " + sysProject.getPidSearchValue()
+                + " " + sysProject.getBuildFolder() + " " + sysProject.getDeployProjectFolderName() + " " + sysProject.getDeployFolder()
+                + " " + sysProject.getStartCmdFolder() + " " + sysProject.getOpenConnectUrl();
+        process = Runtime.getRuntime().exec(cmd);
+        BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        String line = "";
+        while ((line = input.readLine()) != null) {
+            List<String> splits = Arrays.asList(line.split("\\s+"));
+
+        }
+    }
+
     @ApiOperation(value = "查询项目启动状态")
     @UrlAuth(value = UrlAuthTypeEnum.NEED_LOGIN)
     @PostMapping(value = "runStatus")
     public ResponseNormal runStatus() {
         return ResponseUtils.getOtherData(true, ResponseBusEnum.PROJECT_START_SUCCESS.getCode(), ResponseBusEnum.PROJECT_START_SUCCESS.getValue());
     }
+
 }
