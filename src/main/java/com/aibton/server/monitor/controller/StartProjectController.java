@@ -88,6 +88,7 @@ public class StartProjectController {
         String cmd = "cbd " + sysProject.getName() + " " + runProjectReq.getBranch() + " " + sysProject.getPidSearchValue()
                 + " " + sysProject.getBuildFolder() + " " + sysProject.getDeployProjectFolderName() + " " + sysProject.getDeployFolder()
                 + " " + sysProject.getStartCmdFolder() + " " + sysProject.getOpenConnectUrl();
+        System.out.println(cmd);
         String[] cmds = new String[]{
                 "/bin/sh",
                 "-c",
