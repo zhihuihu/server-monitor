@@ -95,7 +95,7 @@ public class StartProjectController {
                 cmd
         };
         LoggerUtils.info(LOGGER, "----执行开始");
-        process = Runtime.getRuntime().exec(cmds);
+        process = Runtime.getRuntime().exec(cmd);
         process.waitFor();
         if (process.waitFor() != 0) {
             LoggerUtils.info(LOGGER, "----执行完成");
