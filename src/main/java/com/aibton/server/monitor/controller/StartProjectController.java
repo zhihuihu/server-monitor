@@ -25,6 +25,7 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -59,6 +60,7 @@ public class StartProjectController {
     @ApiOperation(value = "项目启动")
     @UrlAuth(value = UrlAuthTypeEnum.NEED_LOGIN)
     @PostMapping(value = "run")
+    @Transactional
     public ResponseNormal run(@RequestBody RunProjectReq runProjectReq) {
         AssertUtils.isNotEmpty(LOGGER, runProjectReq.getSysProjectId(), ResponseCommonEnum.PARAM_ERROR);
         AssertUtils.isNotEmpty(LOGGER, runProjectReq.getBranch(), ResponseCommonEnum.PARAM_ERROR);
